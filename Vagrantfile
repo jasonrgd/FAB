@@ -5,6 +5,11 @@
 # configures the configuration version (we support older styles for
 # backwards compatibility). Please don't change it unless you know what
 # you're doing.
+require File.dirname(__FILE__)+"/dependency_manager"
+
+check_plugins ["vagrant-vbguest"]
+
+
 Vagrant.configure("2") do |config|
   # The most common configuration options are documented and commented below.
   # For a complete reference, please see the online documentation at
@@ -49,6 +54,7 @@ Vagrant.configure("2") do |config|
   # backing providers for Vagrant. These expose provider-specific options.
   # Example for VirtualBox:
   #
+  config.vm.synced_folder "." ,"/vagrant", type: "virtualbox"
   # config.vm.provider "virtualbox" do |vb|
   #   # Display the VirtualBox GUI when booting the machine
   #   vb.gui = true
@@ -74,4 +80,10 @@ Vagrant.configure("2") do |config|
   #   apt-get update
   #   apt-get install -y apache2
   # SHELL
+  # Run Ansible from inside Vagrant VM
+  config.vm.provision :ansible_local do |ansible|
+    ansible.playbook = "ansible/playbook.yml"
+    ansible.install_mode = "pip"
+    ansible.version = "2.2.1.0"
+  end
 end
