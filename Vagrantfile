@@ -7,7 +7,7 @@
 # you're doing.
 require File.dirname(__FILE__)+"/dependency_manager"
 
-check_plugins ["vagrant-vbguest"]
+check_plugins ["vagrant-vbguest", "vagrant-triggers"]
 
 
 Vagrant.configure("2") do |config|
@@ -24,6 +24,12 @@ Vagrant.configure("2") do |config|
   # `vagrant box outdated`. This is not recommended.
   # config.vm.box_check_update = false
 
+  config.trigger.before [:up, :provision]  do |git|
+    # git.info " *** Switching sys-puppet to the origin/ubuntu-16.04 branch ..."
+    #git.run "/usr/bin/git -C ../sys-puppet/ fetch origin"
+    #git.run "/usr/bin/git -C ../sys-puppet/ checkout origin/ubuntu-16.04"
+  end
+
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine. In the example below,
   # accessing "localhost:8080" will access port 80 on the guest machine.
@@ -37,7 +43,7 @@ Vagrant.configure("2") do |config|
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
-  # config.vm.network "private_network", ip: "192.168.33.10"
+  # config.vm.network "private_network", ip: "192.168.1.10"
 
   # Create a public network, which generally matched to bridged network.
   # Bridged networks make the machine appear as another physical device on
@@ -82,8 +88,11 @@ Vagrant.configure("2") do |config|
   # SHELL
   # Run Ansible from inside Vagrant VM
   config.vm.provision :ansible_local do |ansible|
-    ansible.playbook = "ansible/playbook.yml"
+    ansible.playbook = "/vagrant/ansible/playbook.yml"
     ansible.install_mode = "pip"
-    ansible.version = "2.2.1.0"
+    ansible.verbose = true
+    ansible.install = true
+    ansible.version = "2.3.2.0"
+    # ansible.config_file = "/vagrant/ansible/ansible.cfg"
   end
 end

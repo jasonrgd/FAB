@@ -1,6 +1,6 @@
 ---
-  - name: This is a hello-world example
-    hosts: 127.0.0.1
-    tasks:
-    - name: Test Connection
-      ping:
+  - name: Fab Machine Setup
+    vars:
+        config:
+          profile: dev
+    include: profiles/{{config.profile}}.yml
