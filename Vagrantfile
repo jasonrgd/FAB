@@ -17,7 +17,7 @@ Vagrant.configure("2") do |config|
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://atlas.hashicorp.com/search.
-  config.vm.box = "centos/7"
+  config.vm.box = "ubuntu/bionic64"
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
@@ -88,11 +88,11 @@ Vagrant.configure("2") do |config|
   # SHELL
   # Run Ansible from inside Vagrant VM
   config.vm.provision :ansible_local do |ansible|
-    ansible.playbook = "/vagrant/ansible/playbook.yml"
+    ansible.playbook = "/vagrant/Ansible/playbook.yml"
     ansible.install_mode = "pip"
     ansible.verbose = true
     ansible.install = true
-    ansible.version = "2.3.2.0"
+    ansible.version = "2.4.3.0"
     # ansible.config_file = "/vagrant/ansible/ansible.cfg"
   end
 end
