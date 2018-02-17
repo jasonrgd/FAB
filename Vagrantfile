@@ -7,7 +7,8 @@
 # you're doing.
 require File.dirname(__FILE__)+"/dependency_manager"
 
-check_plugins ["vagrant-vbguest", "vagrant-triggers"]
+# @TODO move this to Config File
+check_plugins ["vagrant-vbguest", "vagrant-triggers", "vagrant-docker-compose"]
 
 
 Vagrant.configure("2") do |config|
@@ -17,7 +18,12 @@ Vagrant.configure("2") do |config|
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://atlas.hashicorp.com/search.
-  config.vm.box = "ubuntu/bionic64"
+  # @TODO move this to Config File
+  config.vm.box = "ubuntu/xenial64"
+
+  config.vm.network :private_network, ip: "10.9.4.88"
+  config.vm.hostname = "www.leanj.de"
+  config.vm.network "forwarded_port", guest: 7474, host: 7474
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
@@ -60,7 +66,8 @@ Vagrant.configure("2") do |config|
   # backing providers for Vagrant. These expose provider-specific options.
   # Example for VirtualBox:
   #
-  config.vm.synced_folder "." ,"/vagrant", type: "virtualbox"
+  # @TODO move this to Config File
+  config.vm.synced_folder "." ,"/vagrant", type: "nfs"
   # config.vm.provider "virtualbox" do |vb|
   #   # Display the VirtualBox GUI when booting the machine
   #   vb.gui = true
@@ -87,12 +94,17 @@ Vagrant.configure("2") do |config|
   #   apt-get install -y apache2
   # SHELL
   # Run Ansible from inside Vagrant VM
-  config.vm.provision :ansible_local do |ansible|
-    ansible.playbook = "/vagrant/Ansible/playbook.yml"
-    ansible.install_mode = "pip"
-    ansible.verbose = true
-    ansible.install = true
-    ansible.version = "2.4.3.0"
+#
+#  config.vm.provision :ansible_local do |ansible|
+#    ansible.playbook = "/vagrant/Ansible/playbook.yml"
+#    ansible.install_mode = "pip"
+#    ansible.verbose = true
+#    ansible.install = true
+#    ansible.version = "2.4.3.0"
     # ansible.config_file = "/vagrant/ansible/ansible.cfg"
-  end
+#  end
+
+  config.vm.provision :docker
+  config.vm.provision :docker_compose, yml: "/vagrant/Docker/docker-compose.yml", run: "always"
+
 end
