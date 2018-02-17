@@ -1,0 +1,3 @@
+[submodule "docker/Neo4JDocker"]
+	path = docker/Neo4JDocker
+	url = https://github.com/jasonrgd/Neo4JDocker.git
