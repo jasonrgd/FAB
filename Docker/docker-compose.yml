@@ -1,9 +1,0 @@
-version: '2'
-services:
-  neo4j:
-    image: neo4j:3.0
-    ports:
-    - "7474:7474"
-    volumes:
-    - ./Neo4J/shared/db:/data
-    - ./Neo4J/shared/logs:/logs
