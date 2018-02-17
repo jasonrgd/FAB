@@ -1,6 +1,6 @@
 [submodule "docker/Neo4J"]
 	path = docker/Neo4J
 	url = https://github.com/jasonrgd/Neo4JDocker.git
-[submodule "docker/redis"]
-	path = docker/redis
+[submodule "docker/Redis"]
+	path = docker/Redis
 	url = https://github.com/jasonrgd/RedisDocker.git
