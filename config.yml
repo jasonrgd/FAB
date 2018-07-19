@@ -1,4 +1,0 @@
-- vagrant:
-    box: ubuntu/bionic64
-    user: vagrant
-    gui: false
