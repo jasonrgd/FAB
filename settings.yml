@@ -9,4 +9,3 @@ machines:
   master: 'machines/master.yml'
   workers:
     - 'machines/worker.yml'
-    - 'machines/worker.yml'

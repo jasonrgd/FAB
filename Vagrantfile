@@ -21,24 +21,38 @@ Vagrant.configure("2") do |config|
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://atlas.hashicorp.com/search.
-  config.vm.box = @master['vagrant']['box']
 
-  # @TODO move this to Config File
-  config.vm.network :private_network, ip: "10.9.4.88"
-  config.vm.hostname = "FAB"
-  config.vm.network "forwarded_port", guest: 80, host: 80, auto_correct: true
+  config.vm.define @master['vagrant']['name'] do |leader|
+    leader.vm.box = @master['vagrant']['box']
+    leader.vm.network :private_network, ip:  @master['vagrant']['ip']
+    leader.vm.hostname = @master['vagrant']['name']
+    leader.vm.network "forwarded_port", guest: 80, host: 80, auto_correct: true
+
+    leader.vm.provision "docker" , run: "always" do |d|
+      d.run "rancher",
+        image: "rancher/rancher",
+        restart: "unless-stopped",
+        args: "-p 80:80 -p 443:443"
+    end
+  end
+
+  if @workers.count() > 0
+    for worker in @workers
+      config.vm.define worker['vagrant']['name'] do |follower|
+        follower.vm.box = worker['vagrant']['box']
+        follower.vm.network :private_network, ip:  worker['vagrant']['ip']
+        follower.vm.hostname = worker['vagrant']['name']
+        follower.vm.provision "docker"
+      end
+    end
+  end
 
   # @TODO move this to Config File
   config.vm.synced_folder "." ,"/vagrant", type: "nfs"
 
 
-  config.vm.provision "docker" , run: "always" do |d|
-    d.run "rancher",
-      image: "rancher/rancher",
-      restart: "unless-stopped",
-      args: "-p 80:80 -p 443:443"
-  end
+
   #config.vm.provision :docker_compose, yml: "/vagrant/docker/docker-compose.yml", run: "always"
 
 end
-#sudo docker run -d --privileged --restart=unless-stopped --net=host -v /etc/kubernetes:/etc/kubernetes -v /var/run:/var/run rancher/rancher-agent:v2.0.6 --server https://10.9.4.88 --token cwjzw7582mzd4fs2t64ht59dccljdxcc96fvzdsqpjm9hwggwhlsb8 --ca-checksum 97f9a3cca00e1a539a84c396ad49ed550b4c9f50bb977e2d2b3e6aef009c9641 --worker
+#sudo docker run -d --privileged --restart=unless-stopped --net=host -v /etc/kubernetes:/etc/kubernetes -v /var/run:/var/run rancher/rancher-agent:v2.0.6 --server http://10.9.4.88 --token lc7m8vjb98k5dmd58htbd8rmqnfclnmhx85bzv6xtddvjhxfmzh4pr --ca-checksum 1d646b30127e6724f54a0b20ea1af18455c1e036d2bd37828674a4b0cd57b843 --worker
