@@ -1,6 +1,3 @@
-
-
-
 # Force use of ansible_local provisioner, even if Ansible is installed on host.
 force_ansible_local: false
 

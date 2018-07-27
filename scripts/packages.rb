@@ -1,4 +1,5 @@
 require File.dirname(__FILE__)+"/dependency_manager"
+require File.dirname(__FILE__)+"/vagrant_rancheros_guest_plugin"
 
 @settings = YAML.load_file('settings.yml')
 

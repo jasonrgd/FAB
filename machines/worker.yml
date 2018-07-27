@@ -1,6 +1,6 @@
 vagrant:
   name: follower
-  box: ubuntu/bionic64
+  box: chrisurwin/RancherOS
   user: vagrant
   memory: 2048
   vcpus: 1
