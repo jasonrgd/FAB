@@ -1,5 +1,5 @@
 vagrant:
-  name: leader
+  name: rancher.flurryfit.test
   box: ubuntu/bionic64
   user: vagrant
   memory: 2048

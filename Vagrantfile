@@ -11,7 +11,7 @@ require 'yaml'
 require File.dirname(__FILE__)+"/scripts/packages"
 
 # @TODO move this to Config File
-check_plugins ["vagrant-vbguest", "vagrant-docker-compose"]
+check_plugins ["vagrant-vbguest", "vagrant-hostsupdater","vagrant-docker-compose"]
 # exit
 
 Vagrant.configure("2") do |config|
@@ -32,13 +32,13 @@ Vagrant.configure("2") do |config|
 
     leader.vm.provision "docker" , run: "always" do |d|
       d.run "rancher",
-        image: "rancher/rancher",
+        image: "rancher/server",
         restart: "unless-stopped",
-        args: "-p 80:80 -p 443:443"
+        args: "-p 80:8080"
     end
     leader.vm.provider "virtualbox" do |v|
-      v.memory = 4096
-      v.cpus = 2
+      v.memory = 2048
+      v.cpus = 1
     end
     leader.vm.synced_folder "." ,"/vagrant", type: "nfs"
   end
@@ -51,8 +51,8 @@ Vagrant.configure("2") do |config|
         follower.vm.network :private_network, ip:  worker['vagrant']['ip']
         follower.vm.hostname = worker['vagrant']['name']
         follower.vm.provider "virtualbox" do |v|
-          v.memory = 1600
-          v.cpus = 2
+          v.memory = 2048
+          v.cpus = 1
         end
       end
     end
