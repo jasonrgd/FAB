@@ -11,7 +11,7 @@ require 'yaml'
 require File.dirname(__FILE__)+"/scripts/packages"
 
 # @TODO move this to Config File
-check_plugins ["vagrant-vbguest", "vagrant-hostsupdater","vagrant-docker-compose"]
+check_plugins ["vagrant-vbguest", "vagrant-hostsupdater","vagrant-docker-compose","vagrant-proxyconf"]
 # exit
 
 Vagrant.configure("2") do |config|
@@ -22,20 +22,17 @@ Vagrant.configure("2") do |config|
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://atlas.hashicorp.com/search.
 
+  config.proxy.http = "http://"+@master['vagrant']['proxy']
+  config.proxy.https = "https://10.0.2.2:3128"
+  config.proxy.no_proxy = "localhost,127.0.0.1"
   config.vm.define @master['vagrant']['name'] do |leader|
     leader.vm.box = @master['vagrant']['box']
     leader.vm.guest = :ubuntu
     leader.vm.network :private_network, ip:  @master['vagrant']['ip']
     leader.vm.hostname = @master['vagrant']['name']
-    leader.vm.network "forwarded_port", guest: 80, host: 80, auto_correct: true
-    leader.vm.network "forwarded_port", guest: 443, host: 443, auto_correct: true
-
-    leader.vm.provision "docker" , run: "always" do |d|
-      d.run "rancher",
-        image: "rancher/server",
-        restart: "unless-stopped",
-        args: "-p 80:8080"
-    end
+    leader.vm.network "forwarded_port", guest: 80, host: 8080, auto_correct: true
+    leader.vm.network "forwarded_port", guest: 443, host: 8443, auto_correct: true
+    leader.vm.provision "shell", inline: "touch /etc/environment"
     leader.vm.provider "virtualbox" do |v|
       v.memory = 2048
       v.cpus = 1
@@ -57,7 +54,4 @@ Vagrant.configure("2") do |config|
       end
     end
   end
-
-  # @TODO move this to Config File
-  #config.vm.provision :docker_compose, yml: "/vagrant/docker/docker-compose.yml", run: "always"
 end

@@ -5,6 +5,7 @@ vagrant:
   memory: 2048
   vcpus: 1
   ip: 10.9.4.88
+  proxy: "10.0.2.2:3128"
 
 firewall:
   enabled: true
