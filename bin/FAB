@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+set -e
+trap '>&2 printf "\n\e[01;31mERROR\033[0m: Command \`%s\` on line $LINENO failed with exit code $?\n" "$BASH_COMMAND"' ERR
+
+readonly FAB_DIR="$(
+  cd "$(
+    dirname "$(
+      (readlink "${BASH_SOURCE[0]}" || echo "${BASH_SOURCE[0]}") \
+        | sed -e "s#^../#$(dirname "$(dirname "${BASH_SOURCE[0]}")")/#"
+    )"
+  )/.." >/dev/null \
+  && pwd
+)"
+
+echo FAB_DIR
