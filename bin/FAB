@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-
 set -e
 trap '>&2 printf "\n\e[01;31mERROR\033[0m: Command \`%s\` on line $LINENO failed with exit code $?\n" "$BASH_COMMAND"' ERR
 
+## find directory where this script is located following symlinks if neccessary
 readonly FAB_DIR="$(
   cd "$(
     dirname "$(
@@ -13,4 +13,4 @@ readonly FAB_DIR="$(
   && pwd
 )"
 
-echo FAB_DIR
+echo ${FAB_DIR}

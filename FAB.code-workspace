@@ -4,6 +4,12 @@
 			"path": "."
 		}
 	],
+	"extensions": {
+		"recommendations": [
+		  "eamodio.gitlens",
+		  "davidanson.vscode-markdownlint",
+		]
+	},
 	"settings": {
 		"workbench.colorCustomizations": {
 			"activityBar.background": "#02f2fa62",
