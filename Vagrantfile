@@ -22,9 +22,9 @@ Vagrant.configure("2") do |config|
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://atlas.hashicorp.com/search.
 
-  config.proxy.http = "http://"+@master['vagrant']['proxy']
-  config.proxy.https = "https://10.0.2.2:3128"
-  config.proxy.no_proxy = "localhost,127.0.0.1"
+  # config.proxy.http = "http://"+@master['vagrant']['proxy']
+  # config.proxy.https = "https://10.0.2.2:3128"
+  # config.proxy.no_proxy = "localhost,127.0.0.1"
   config.vm.define @master['vagrant']['name'] do |leader|
     leader.vm.box = @master['vagrant']['box']
     leader.vm.guest = :ubuntu
