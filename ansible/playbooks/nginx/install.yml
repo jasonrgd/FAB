@@ -1,5 +1,0 @@
----
-  - name: This is a nginx hello-world example
-    tasks:
-    - name: Test Connection
-      shell: echo "nginx"
