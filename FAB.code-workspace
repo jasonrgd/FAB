@@ -8,6 +8,9 @@
 		"recommendations": [
 		  "eamodio.gitlens",
 		  "davidanson.vscode-markdownlint",
+		  "vscoss.vscode-ansible",
+		  "mads-hartmann.bash-ide-vscode",
+		  "rogalmic.bash-debug",
 		]
 	},
 	"settings": {

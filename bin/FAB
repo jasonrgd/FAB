@@ -13,4 +13,65 @@ readonly FAB_DIR="$(
   && pwd
 )"
 
-echo ${FAB_DIR}
+declare FAB_COMMAND=
+readonly FAB_BASH_LIBRARY_FOLDER="${FAB_DIR}/commands/bash/library"
+
+## parse first argument as command and determine validity
+if (( "$#" )) && [[ -f "${FAB_DIR}/commands/bash/${1}.sh" ]]; then
+  FAB_COMMAND="$1"
+  shift
+else
+  FAB_COMMAND=usage
+fi
+
+
+## parse arguments
+while (( "$#" )); do
+  case "$1" in
+    -h|--help)
+      FAB_HELP=1
+      break
+      ;;
+    -v|--verbose)
+      FAB_VERBOSE=1
+      break
+      ;;
+    --) # end argument parsing (unless command is on 'anyargs' list and consumes anything as params)
+      shift
+      containsElement "${FAB_COMMAND}" "${FAB_ANYARGS[@]}" || break
+      ;;
+    -*|--*=) # unsupported flags (unless command is on 'anyargs' list and consumes anything as params)
+      containsElement "${FAB_COMMAND}" "${FAB_ANYARGS[@]}" && break
+      >&2 printf "\e[01;31mERROR\033[0m: Unsupported flag $1\n"
+      exit 1
+      ;;
+    *) # preserve positional arguments
+      FAB_PARAMS+=($1)
+      shift
+      ;;
+  esac
+done
+
+function assert_installed {
+  if [[ ! -f "${FAB_HOME_DIR}/.installed" ]] \
+    || [[ "${FAB_HOME_DIR}/.installed" -ot "${FAB_DIR}/bin/FAB" ]]
+  then
+    [[ -f "${FAB_HOME_DIR}/.installed" ]] && echo "==> Updating warden" || echo "==> Starting initialization"
+
+    "${FAB_DIR}/bin/FAB" install
+
+    [[ -f "${FAB_HOME_DIR}/.installed" ]] && echo "==> Update complete" || echo "==> Initialization complete"
+    date > "${FAB_HOME_DIR}/.installed"
+  fi
+}
+
+#source library
+source "${FAB_DIR}/commands/bash/library/autoload.sh"
+
+## display command specific usage info if help flag is set
+if [[ ${FAB_HELP} ]]; then
+  source "${FAB_DIR}/commands/usage.sh"
+fi
+
+## execute sub-command in context of this script
+source "${FAB_DIR}/commands/bash/${FAB_COMMAND}.sh"
