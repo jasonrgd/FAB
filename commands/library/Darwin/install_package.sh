@@ -6,7 +6,6 @@ trap '>&2 printf "\n\e[01;31mERROR\033[0m: Command \`%s\` on line $LINENO failed
 
 fab_install_package()
 {
-    declare OS="$(uname -s)"
     declare check_installed=`command -v $1`
     if [[ ${check_installed} ]]; then
         install=false
@@ -16,12 +15,11 @@ fab_install_package()
     fi
 
     if [[ ${install} == true ]]; then
-        if [ "${OS}" == "Darwin" ]; then
-            brew install -y $2
-        elif [ "${OS}" == "Linux" ]; then
-            if [ -f /etc/debian_version ]; then
-                sudo apt-get install -y $2
+            #add a check for cask else do a brew install
+            if [ -z "$3" ]; then
+                brew install -y $2
+            else 
+                brew install -y $3
             fi
-        fi
     fi
 }

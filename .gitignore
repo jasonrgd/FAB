@@ -1,3 +1,7 @@
 .vagrant/*
 .idea/*
 *.log
+env
+tmp/
+bin/minikube
+bin/kubectl
