@@ -2,6 +2,8 @@
 set -e
 trap '>&2 printf "\n\e[01;31mERROR\033[0m: Command \`%s\` on line $LINENO failed with exit code $?\n" "$BASH_COMMAND"' ERR
 
+OS=`uname -s`
+
 ## find directory where this script is located following symlinks if neccessary
 readonly FAB_DIR="$(
   cd "$(
@@ -14,7 +16,7 @@ readonly FAB_DIR="$(
 )"
 
 declare FAB_COMMAND=
-readonly FAB_BASH_LIBRARY_FOLDER="${FAB_DIR}/commands/bash/library"
+readonly FAB_OS_LIBRARY_FOLDER="${FAB_DIR}/commands/library/${OS}"
 
 ## parse first argument as command and determine validity
 if (( "$#" )) && [[ -f "${FAB_DIR}/commands/bash/${1}.sh" ]]; then
@@ -24,6 +26,7 @@ else
   FAB_COMMAND=usage
 fi
 
+FAB_COMMAND_PARAMS=${@}
 
 ## parse arguments
 while (( "$#" )); do
@@ -66,7 +69,7 @@ function assert_installed {
 }
 
 #source library
-source "${FAB_DIR}/commands/bash/library/autoload.sh"
+source "${FAB_DIR}/commands/library/autoload.sh"
 
 ## display command specific usage info if help flag is set
 if [[ ${FAB_HELP} ]]; then
@@ -74,4 +77,4 @@ if [[ ${FAB_HELP} ]]; then
 fi
 
 ## execute sub-command in context of this script
-source "${FAB_DIR}/commands/bash/${FAB_COMMAND}.sh"
+source "${FAB_DIR}/commands/bash/${FAB_COMMAND}.sh" $FAB_COMMAND_PARAMS
