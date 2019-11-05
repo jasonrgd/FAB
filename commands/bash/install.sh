@@ -13,9 +13,10 @@ fab_install_package pip3 python3-pip
 
 python=python3
 
-#install configuration manager
-if ! $python -c 'import pkgutil; exit(not pkgutil.find_loader("ansible"))'; then
-    $python -m pip install ansible
-fi
+python3 -m venv env
+source env/bin/activate
+
+#install all requirements
+$python -m pip install -r requirements.txt
 
 #install all dependencies to make this work by running the playbook
